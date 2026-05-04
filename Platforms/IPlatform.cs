@@ -1,12 +1,12 @@
 ﻿namespace DeviceUniqueIdentifier.Platforms
 {
-    internal interface IPlatform
+    public interface IPlatform
     {
-        string GetRawDeviceData();
-        Task<string> GetRawDeviceDataAsync();
-        string GetSHA1Identifier();
-        Task<string> GetSHA1IdentifierAsync();
-        string GetSHA1IdentifierFromRawData(string raw);
-        Task<string> GetSHA1IdentifierFromRawDataAsync(string raw);
+        string GetRawDeviceData(List<string> additionalInfo = null);
+        Task<string> GetRawDeviceDataAsync(List<string> additionalInfo = null);
+        string GetSHA1Identifier(List<string> additionalInfo = null);
+        Task<string> GetSHA1IdentifierAsync(List<string> additionalInfo = null);
+        string GetSHA1IdentifierFromRawData(string raw, List<string> additionalInfo = null);
+        Task<string> GetSHA1IdentifierFromRawDataAsync(string raw, List<string> additionalInfo = null);
     }
 }

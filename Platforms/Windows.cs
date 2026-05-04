@@ -1,16 +1,15 @@
 ﻿
+using System.Data;
+using System.Management;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DeviceUniqueIdentifier.Platforms
 {
-    internal class Windows : IPlatform
+    internal class Windows : PlatformBase
     {
-        public string GetRawDeviceData()
-        {
-            throw new NotImplementedException();
-        }
-
-        async public Task<string> GetRawDeviceDataAsync()
+        public override string GetRawDeviceData(List<string> additionalInfo = null)
         {
             StringBuilder dataStr = new StringBuilder();
             try
@@ -18,7 +17,7 @@ namespace DeviceUniqueIdentifier.Platforms
                 ManagementObjectSearcher searcherBb = new ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard");
                 foreach (var obj in searcherBb.Get())
                 {
-                    concatStr += (string)obj.Properties["SerialNumber"].Value.ToString().Trim() ?? string.Empty;
+                    dataStr.Append((string)obj.Properties["SerialNumber"].Value.ToString().Trim() ?? string.Empty);
                     break;
                 }
             }
@@ -31,7 +30,7 @@ namespace DeviceUniqueIdentifier.Platforms
                 ManagementObjectSearcher searcherBios = new ManagementObjectSearcher("SELECT * FROM Win32_BIOS");
                 foreach (var obj in searcherBios.Get())
                 {
-                    concatStr += (string)obj.Properties["SerialNumber"].Value.ToString().Trim() ?? string.Empty;
+                    dataStr.Append((string)obj.Properties["SerialNumber"].Value.ToString().Trim() ?? string.Empty);
                     break;
                 }
             }
@@ -44,33 +43,24 @@ namespace DeviceUniqueIdentifier.Platforms
                 ManagementObjectSearcher searcherOs = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
                 foreach (var obj in searcherOs.Get())
                 {
-                    concatStr += obj.Properties["SerialNumber"].Value.ToString().Trim() ?? string.Empty;
+                    dataStr.Append(obj.Properties["SerialNumber"].Value.ToString().Trim() ?? string.Empty);
                     break;
                 }
             }
             catch (Exception)
             {
             }
+            return dataStr.ToString();
         }
 
-        public string GetSHA1Identifier()
+        async public override Task<string> GetRawDeviceDataAsync(List<string> additionalInfo = null)
         {
-            throw new NotImplementedException();
-        }
-
-        async public Task<string> GetSHA1IdentifierAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetSHA1IdentifierFromRawData(string raw)
-        {
-            throw new NotImplementedException();
-        }
-
-        async public Task<string> GetSHA1IdentifierFromRawDataAsync(string raw)
-        {
-            throw new NotImplementedException();
+            string dataStr = "";
+            await Task.Run(() =>
+            {
+                dataStr = GetRawDeviceData(additionalInfo);
+            });
+            return dataStr;
         }
     }
 }
