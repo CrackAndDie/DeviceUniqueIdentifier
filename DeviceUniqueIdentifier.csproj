@@ -1,12 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
+        <AssemblyName>DeviceUniqueIdentifier</AssemblyName>
+
+        <PackageId>DeviceUniqueIdentifier</PackageId>
+        <Authors>crackanddie</Authors>
+        <Product>DeviceUniqueIdentifier</Product>
+        <PackageDescription>A backend for generating unique device identifiers</PackageDescription>
+        <Copyright>Copyright © 2026</Copyright>
+        <PackageTags>Unique Hash</PackageTags>
+        <PackageVersion>1.0.4</PackageVersion>
+        <PackageProjectUrl>https://github.com/CrackAndDie/DeviceUniqueIdentifier</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/CrackAndDie/DeviceUniqueIdentifier</RepositoryUrl>
+        <PackageIconUrl>https://raw.githubusercontent.com/CADindustries/container/main/logos/unique_device.png</PackageIconUrl>
+        <PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Management" />
+        <None Include="NUGET_README.md" Pack="true" PackagePath="\" />
+        <None Include="LICENSE" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

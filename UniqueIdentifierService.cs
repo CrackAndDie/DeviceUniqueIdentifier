@@ -1,5 +1,8 @@
 ﻿using DeviceUniqueIdentifier.Platforms;
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace DeviceUniqueIdentifier
 {
@@ -24,29 +27,14 @@ namespace DeviceUniqueIdentifier
             return _concretePlatform.GetRawDeviceData(additionalInfo);
         }
 
-        public Task<string> GetRawDeviceDataAsync(List<string> additionalInfo = null)
-        {
-            return _concretePlatform.GetRawDeviceDataAsync(additionalInfo);
-        }
-
         public string GetSHA1Identifier(List<string> additionalInfo = null)
         {
             return _concretePlatform.GetSHA1Identifier(additionalInfo);
         }
 
-        public Task<string> GetSHA1IdentifierAsync(List<string> additionalInfo = null)
-        {
-            return _concretePlatform.GetSHA1IdentifierAsync(additionalInfo);
-        }
-
         public string GetSHA1IdentifierFromRawData(string raw, List<string> additionalInfo = null)
         {
             return _concretePlatform.GetSHA1IdentifierFromRawData(raw, additionalInfo); 
-        }
-
-        public Task<string> GetSHA1IdentifierFromRawDataAsync(string raw, List<string> additionalInfo = null)
-        {
-            return _concretePlatform.GetSHA1IdentifierFromRawDataAsync(raw, additionalInfo);
         }
     }
 }

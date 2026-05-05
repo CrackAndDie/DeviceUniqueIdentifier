@@ -1,6 +1,10 @@
 ﻿using DeviceUniqueIdentifier.Utils;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DeviceUniqueIdentifier.Platforms
 {
@@ -8,28 +12,23 @@ namespace DeviceUniqueIdentifier.Platforms
     {
         public override string GetRawDeviceData(List<string> additionalInfo = null)
         {
-            return GetRawDeviceDataAsync(additionalInfo).GetAwaiter().GetResult();
-        }
-
-        async public override Task<string> GetRawDeviceDataAsync(List<string> additionalInfo = null)
-        {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine(await CpuInfo("vendor_id")); // intel or other shite
-            stringBuilder.AppendLine(await CpuInfo("cpu family")); // https://superuser.com/questions/1154244/what-is-cpu-family
-            stringBuilder.AppendLine(await CpuInfo("cpu cores")); // the same: https://superuser.com/questions/1154244/what-is-cpu-family
-            stringBuilder.AppendLine(await CpuInfo("model name")); // anime
-            stringBuilder.AppendLine(await JournalCtl()); // kernel info
-            stringBuilder.AppendLine(await PureCmd("cat /etc/machine-id")); // "unique" machine id
+            stringBuilder.AppendLine(CpuInfo("vendor_id")); // intel or other shite
+            stringBuilder.AppendLine(CpuInfo("cpu family")); // https://superuser.com/questions/1154244/what-is-cpu-family
+            stringBuilder.AppendLine(CpuInfo("cpu cores")); // the same: https://superuser.com/questions/1154244/what-is-cpu-family
+            stringBuilder.AppendLine(CpuInfo("model name")); // anime
+            stringBuilder.AppendLine(JournalCtl()); // kernel info
+            stringBuilder.AppendLine(PureCmd("cat /etc/machine-id")); // "unique" machine id
             return stringBuilder.ToString();
         }
 
-        private async Task<string> PureCmd(string command, List<string> additionalInfo = null)
+        private string PureCmd(string command, List<string> additionalInfo = null)
         {
             try
             {
                 var cmd = new Cmd();
 
-                var k = await cmd.RunAsync("/bin/bash", $"-c \"{command}\"", new CmdOptions
+                var k = cmd.Run("/bin/bash", $"-c \"{command}\"", new CmdOptions
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
@@ -52,13 +51,13 @@ namespace DeviceUniqueIdentifier.Platforms
             return string.Empty;
         }
 
-        private async Task<string> JournalCtl(List<string> additionalInfo = null)
+        private string JournalCtl(List<string> additionalInfo = null)
         {
             try
             {
                 var cmd = new Cmd();
 
-                var k = await cmd.RunAsync("/bin/bash", $"-c \"journalctl --quiet --system --boot --no-pager -o cat SYSLOG_IDENTIFIER=kernel | head -n 200\"", new CmdOptions
+                var k = cmd.Run("/bin/bash", $"-c \"journalctl --quiet --system --boot --no-pager -o cat SYSLOG_IDENTIFIER=kernel | head -n 200\"", new CmdOptions
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
@@ -100,13 +99,13 @@ namespace DeviceUniqueIdentifier.Platforms
             }
         }
 
-        private async Task<string> CpuInfo(string param, List<string> additionalInfo = null)
+        private string CpuInfo(string param, List<string> additionalInfo = null)
         {
             try
             {
                 var cmd = new Cmd();
 
-                var k = await cmd.RunAsync("/bin/bash", $"-c \"cat /proc/cpuinfo\"", new CmdOptions
+                var k = cmd.Run("/bin/bash", $"-c \"cat /proc/cpuinfo\"", new CmdOptions
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,

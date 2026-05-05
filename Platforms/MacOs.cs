@@ -1,7 +1,9 @@
 ﻿using DeviceUniqueIdentifier.Utils;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Management;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DeviceUniqueIdentifier.Platforms
 {
@@ -9,21 +11,16 @@ namespace DeviceUniqueIdentifier.Platforms
     {
         public override string GetRawDeviceData(List<string> additionalInfo = null)
         {
-            return GetRawDeviceDataAsync(additionalInfo).GetAwaiter().GetResult();
+            return PureCmd("ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { print $3; }'", additionalInfo); // "unique" machine id
         }
 
-        async public override Task<string> GetRawDeviceDataAsync(List<string> additionalInfo = null)
-        {
-            return await PureCmd("ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { print $3; }'", additionalInfo); // "unique" machine id
-        }
-
-        private async Task<string> PureCmd(string command, List<string> additionalInfo = null)
+        private string PureCmd(string command, List<string> additionalInfo = null)
         {
             try
             {
                 var cmd = new Cmd();
 
-                var k = await cmd.RunAsync("/bin/bash", $"-c \"{command}\"", new CmdOptions
+                var k = cmd.Run("/bin/bash", $"-c \"{command}\"", new CmdOptions
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,

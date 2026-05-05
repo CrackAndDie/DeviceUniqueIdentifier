@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DeviceUniqueIdentifier.Utils
 {
@@ -28,7 +30,7 @@ namespace DeviceUniqueIdentifier.Utils
             return CreateHiddenProcess(appPath, args, CmdOptions.Default);
         }
 
-        public async Task<CommandLineRunResult> RunAsync(string appPath, string args, CmdOptions o, bool waitForExit)
+        public CommandLineRunResult Run(string appPath, string args, CmdOptions o, bool waitForExit)
         {
             var process = CreateHiddenProcess(appPath, args, o);
 
@@ -44,7 +46,7 @@ namespace DeviceUniqueIdentifier.Utils
                 {
                     process.Start();
                     res.Output = process.StandardOutput.ReadToEnd();
-                    await process.WaitForExitAsync();
+                    process.WaitForExit();
                     res.ExitType = CommandLineExitTypes.Ok;
                     res.ExitCode = process.ExitCode;
                     if (process.HasExited == false) process.Kill();
@@ -65,9 +67,9 @@ namespace DeviceUniqueIdentifier.Utils
             return res;
         }
 
-        public async Task<CommandLineRunResult> RunAsync(string appPath, string args, bool waitForExit)
+        public CommandLineRunResult Run(string appPath, string args, bool waitForExit)
         {
-            return await RunAsync(appPath, args, CmdOptions.Default, waitForExit);
+            return Run(appPath, args, CmdOptions.Default, waitForExit);
         }
     }
 
